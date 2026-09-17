@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Dragon_Movement : MonoBehaviour
 {
@@ -22,16 +23,16 @@ public class Dragon_Movement : MonoBehaviour
         //rb.linearVelocity = transform.forward * maxspeed;
         if (rb.linearVelocity.magnitude < maxspeed)
             rb.AddForce(transform.forward * moveForce, ForceMode.Acceleration);
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (InputSystem.actions["Attack"].ReadValue<float>() > 0)
         {
             fire.SetActive(true);
         }
-        else if (Input.GetKeyUp(KeyCode.Space))
+        else if (!InputSystem.actions["Attack"].triggered)
         {
             fire.SetActive(false);
         }
     }
-
+    
     private void FixedUpdate()
     {
         transform.rotation = rotationMatch.transform.rotation;

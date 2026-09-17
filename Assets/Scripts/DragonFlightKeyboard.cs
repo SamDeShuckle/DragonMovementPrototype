@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class DragonFlightKeyboard : MonoBehaviour
 {
@@ -6,6 +7,7 @@ public class DragonFlightKeyboard : MonoBehaviour
     public GameObject yaw;
     public GameObject pitch;
     public GameObject player;
+    public float levelOutRate = 2f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,8 +18,10 @@ public class DragonFlightKeyboard : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        //float horizontal = Input.GetAxis("Horizontal");
+        //float vertical = Input.GetAxis("Vertical");
+        float horizontal = InputSystem.actions["Move"].ReadValue<Vector2>().x;
+        float vertical = InputSystem.actions["Move"].ReadValue<Vector2>().y;
 
         // Rotate the camera
         //Debug.Log(vertical);
@@ -26,11 +30,15 @@ public class DragonFlightKeyboard : MonoBehaviour
 
         if (player.transform.right.y > 0.1f || player.transform.right.y < -0.1f)
         {
-            Debug.Log(player.transform.right.y);
             //Debug.Log("Rotate");
             //Vector3 localForward = yaw.transform.InverseTransformDirection(pitch.transform.forward);
             yaw.transform.Rotate(Vector3.up * -player.transform.right.y*0.3f, Space.Self);
-            //Debug.Log(Vector3.up * horizontal * player.transform.right.y);
+            if (player.transform.right.y != 0.0f) 
+            { 
+                pitch.transform.Rotate(Vector3.forward * -player.transform.right.y * levelOutRate, Space.Self);
+            }
+            //Debug.Log("Player Up Vector" + player.transform.up);
+            //Debug.Log("Pitch Rotation" + pitch.transform.forward);
         }
         //Vector3 localForward = yaw.transform.InverseTransformDirection(pitch.transform.forward);
         ////Debug.Log("Local forward: " + localForward);
